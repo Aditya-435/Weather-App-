@@ -1,11 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Primarydata from "./Primarydata";
 import Secondarydata from "./Secondarydata";
 import Uvindex from "./Uvindex";
-import Sample from "./Sample";
 import WindStatus from "./WindStatus";
 import SunTime from "./SunTime";
 import Humidity from "./Humidity";
@@ -13,7 +10,7 @@ import Visibility from "./Visibility";
 import AirQuality from "./AirQuality";
 
 const Main = () => {
-  const api_key = "fec60f8cac5f453c89222a9417bbd852	"; // 1500 calls/day
+  const api_key = "5c8fea751bfc455396e3e26f262b42b4"; // 50 calls/day
 
   const [wdata, setWdata] = useState({
     weather: {
@@ -27,18 +24,12 @@ const Main = () => {
 
   const fetchAPI = async () => {
     const response = await fetch(
-      `https://api.weatherbit.io/v2.0/current?&city=${search}&key=${api_key}`
+      https://api.weatherbit.io/v2.0/current?&city=${search}&key=${api_key}
     );
     const result = await response.json();
     const data = result.data[0];
     setWdata(data);
-
-    // console.log(data);
   };
-
-  useEffect(() => {
-    fetchAPI();
-  }, [search]);
 
   const getDataFromSearchBar = (Childdata) => {
     setSearch(Childdata);
@@ -49,17 +40,36 @@ const Main = () => {
     setCelBtnActive(true);
     setFahBtnActive(false);
   };
+
   const fahclick = () => {
     setClickName("fah");
     setFahBtnActive(true);
     setCelBtnActive(false);
   };
 
+  const handleSearchButtonClick = () => {
+    fetchAPI(); // Only fetch when button is clicked
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      fetchAPI(); // Only fetch when Enter is pressed
+    }
+  };
+
   return (
     <div className="Main w-screen h-screen bg-[#C1C2C6] lg:p-4 p-4 xs:p-0 sm:p-0 flex justify-center items-center">
       <div className="container w-[80%] lg:w-[80%] xs:w-full sm:w-full h-[90%] lg:h-[90%] xs:h-full sm:h-full bg-[#F6F6F8] rounded-[24px] lg:rounded-[24px] xs:rounded-none sm:rounded-none xs:flex-col sm:flex-col flex flex-row lg:flex-row md:overflow-y-scroll overflow-y-scroll lg:overflow-hidden xs:overflow-y-scroll sm:overflow-y-scroll pb-0 lg:pb-0 sm:pb-4">
         <div className="left-col w-[30%] lg:w-[30%] xs:w-full sm:w-full h-full bg-[#FFFFFF] pl-10 py-4 flex flex-col justify-between items-start gap-4">
-          <SearchBar getSearchData={getDataFromSearchBar} />
+          <div className="flex items-center gap-2">
+            <SearchBar getSearchData={getDataFromSearchBar} onKeyPress={handleKeyPress} />
+            <button
+              onClick={handleSearchButtonClick}
+              className="bg-black text-white px-4 py-2 rounded"
+            >
+              Search
+            </button>
+          </div>
           <Primarydata mainData={wdata} clickName={clickName} />
           <Secondarydata mainData={wdata} />
         </div>
@@ -87,7 +97,7 @@ const Main = () => {
               </button>
             </div>
           </div>
-          <div className="bottom-row w-full flex-1 p-2  grid grid-cols-3 lg:grid-cols-3 xs:grid-cols-1 sm:grid-cols-2 xs:gap-6 sm:gap-8  place-items-center md:place-content-stretch">
+          <div className="bottom-row w-full flex-1 p-2 grid grid-cols-3 lg:grid-cols-3 xs:grid-cols-1 sm:grid-cols-2 xs:gap-6 sm:gap-8 place-items-center md:place-content-stretch">
             <Uvindex mainData={wdata} />
             <WindStatus mainData={wdata} />
             <SunTime mainData={wdata} />

@@ -82,7 +82,7 @@ const Primarydata = ({ mainData, clickName }) => {
     ];
     const date = new Date();
     const day = weekday[date.getDay()];
-    const time = `${date.getHours()}:${date.getMinutes()}`;
+    const time = ${date.getHours()}:${date.getMinutes()};
     setCurrentDay(day);
     setCurrentTime(time);
   };
