@@ -13,7 +13,9 @@ const Main = () => {
   const api_key = "5c8fea751bfc455396e3e26f262b42b4"; // 50 calls/day
 
   const [wdata, setWdata] = useState({
+    temp: 0,
     weather: {
+      icon: "",
       description: "",
     },
   });
@@ -23,12 +25,18 @@ const Main = () => {
   const [fahbtnactive, setFahBtnActive] = useState(false);
 
   const fetchAPI = async () => {
-    const response = await fetch(
-      https://api.weatherbit.io/v2.0/current?&city=${search}&key=${api_key}
-    );
-    const result = await response.json();
-    const data = result.data[0];
-    setWdata(data);
+    try {
+      const response = await fetch(
+        `https://api.weatherbit.io/v2.0/current?city=${search}&key=${api_key}`
+      );
+      const result = await response.json();
+      if (result && result.data && result.data.length > 0) {
+        const data = result.data[0];
+        setWdata(data);
+      }
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
   };
 
   const getDataFromSearchBar = (Childdata) => {
@@ -48,12 +56,12 @@ const Main = () => {
   };
 
   const handleSearchButtonClick = () => {
-    fetchAPI(); // Only fetch when button is clicked
+    fetchAPI();
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      fetchAPI(); // Only fetch when Enter is pressed
+      fetchAPI();
     }
   };
 
